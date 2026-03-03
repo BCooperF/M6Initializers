@@ -12,7 +12,33 @@ class ViewController: UIViewController {
 	@IBOutlet weak var nameField: UITextField!
 	@IBOutlet weak var ageField: UITextField!
 	@IBAction func resultButton(_ sender: Any) {
+		let nameRaw = nameField.text ?? ""
+		let ageRaw = ageField.text ?? ""
+		
+		switch modeControl.selectedSegmentIndex {
+		case 0:
+			guard !nameRaw.isEmpty, !ageRaw.isEmpty else{
+				return
+			}
+			guard let age = Int(ageRaw) else{
+				showAlert(title: "Invalid", message: "Age must be a number")
+				return
+			}
+			if let vp = ValidatedPerson(name: nameRaw, age: age) {
+				resultLabel.text = "Failable"
+			}
+			let p = Person(name: nameRaw, age: age)
+			resultLabel.text = "Designated -> \(p.name), \(p.age)"
+		}
 	}
+	
+	func showAlert(){
+		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+		let okAlert = UIAlertAction(title: "OK", style: .default)
+		alert.addAction(okAlert)
+		present.addAction()
+	}
+	
 	@IBOutlet weak var resultLabel: UILabel!
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -39,11 +65,14 @@ class ViewController: UIViewController {
 			self.init(name: name, age: age)
 		}
 		
-		class ValidatedPersonlet name: String
-		let age: Int
-		init?(name: Stirng, age: Int){
-			guard !name.isEmpty, age > 0 else{
-				return nil
+		class ValidatedPerson {
+			let name: String
+			let age: Int
+			
+			init?(name: String, age: Int){
+				guard !name.isEmpty, age > 0 else{
+					return nil
+				}
 			}
 		}
 	}
